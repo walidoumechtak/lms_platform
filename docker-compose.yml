@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: mysql
+    build: ./mysql
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: lsm_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - mysql-data:/lsm-database
+    networks:
+      - lsm-network
+
+  nextjs:
+    container_name: lsm
+    build: ./lsm
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_URL: postgresql://root:root@mysql:5432/lsm_db
+    env_file:
+      - ./lsm/.env
+    volumes:
+      - lsm-data:/app
+    networks:
+      - lsm-network
+
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/walid/Desktop/lsm_platform/mysql
+      o: bind
+  lsm-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/walid/Desktop/lsm_platform/lsm
+      o: bind
+
+networks:
+  lsm-network:
+    driver: bridge

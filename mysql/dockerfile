@@ -1,0 +1,12 @@
+FROM postgres:latest
+
+ENV POSTGRES_USER=root
+ENV POSTGRES_PASSWORD=root
+ENV POSTGRES_DB=lsm_db
+
+# Optionally, you can run SQL scripts or initialize the database schema
+# COPY init.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 5432
+
+CMD ["postgres"]
